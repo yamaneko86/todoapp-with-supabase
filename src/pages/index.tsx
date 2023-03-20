@@ -1,8 +1,5 @@
 import Head from "next/head";
-import { Inter } from "next/font/google";
-import TodoApp from "../../components/TodoApp";
-
-const inter = Inter({ subsets: ["latin"] });
+import Home from "../../components/Home";
 
 export default function Index() {
   return (
@@ -17,7 +14,7 @@ export default function Index() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <TodoApp />
+      <Home />
     </>
   );
 }
