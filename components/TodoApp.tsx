@@ -1,14 +1,7 @@
 import { useSupabaseClient } from "@supabase/auth-helpers-react";
 import { Session } from "@supabase/supabase-js";
 import React, { useEffect, useState } from "react";
-import { supabase } from "~/utils/supabase";
 import { addTodo, deleteTodo, getAllTodos } from "~/utils/supabaseFunction";
-import { Todo } from "~/utils/interface";
-
-type Props = {
-  todos: Todo[];
-  setTodos: React.Dispatch<any>;
-};
 
 const TodoApp = ({ session }: { session: Session }) => {
   const [todos, setTodos] = useState<any>([]);
@@ -20,20 +13,20 @@ const TodoApp = ({ session }: { session: Session }) => {
   useEffect(() => {
     // Todo全件取得
     const getTodos = async () => {
-      const todos = await getAllTodos();
+      const todos = await getAllTodos(user.id);
       setTodos(todos);
     };
     getTodos();
-  }, [supabaseClient]);
+  }, [supabaseClient, user.id]);
 
   // Todoの追加
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (title.length) {
       // Todoの追加 実行
-      await addTodo(title);
+      await addTodo(title, user.id);
       // Todoリスト更新
-      let todos = await getAllTodos();
+      let todos = await getAllTodos(user.id);
       setTodos(todos);
       // 入力域を空にする
       setTitle("");
@@ -45,15 +38,9 @@ const TodoApp = ({ session }: { session: Session }) => {
     // Todoの削除 実行
     await deleteTodo(todo_id);
     // Todoリスト更新
-    let todos = await getAllTodos();
+    let todos = await getAllTodos(user.id);
     setTodos(todos);
   };
-
-  // ログアウトする
-  // const signOut = async () => {
-  //   const { error } = await supabaseClient.auth.signOut();
-  //   if (error) console.log("Error logging out!", error.message);
-  // };
 
   return (
     <section className="text-center mb-2 text-2xl font-medium">
@@ -69,9 +56,6 @@ const TodoApp = ({ session }: { session: Session }) => {
           Add
         </button>
       </form>
-
-      {/* <TodoList todos={todos} setTodos={setTodos} /> */}
-      {/* Todoリスト */}
       <div>
         <ul className="mx-auto">
           {todos.map((todo: any) => (
@@ -90,13 +74,6 @@ const TodoApp = ({ session }: { session: Session }) => {
           ))}
         </ul>
       </div>
-
-      {/* <button
-        className="my-4 border-2 border-black rounded-md px-2 bg-gray-200"
-        onClick={signOut}
-      >
-        ログアウト
-      </button> */}
     </section>
   );
 };
