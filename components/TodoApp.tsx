@@ -48,11 +48,12 @@ const TodoApp = ({ session }: { session: Session }) => {
       <form onSubmit={(e) => handleSubmit(e)}>
         <input
           type="text"
-          className="mr-2 shadow-lg p-1 outline-none"
+          className="mr-2 p-1 border-2"
           onChange={(e) => setTitle(e.target.value)}
           value={title}
+          placeholder="Todoを入力..."
         />
-        <button className="shadow-md border-2 px-1 py-1 rounded-lg bg-green-200">
+        <button className="shadow-md border-2 px-1 py-1 rounded-lg bg-blue-200">
           Add
         </button>
       </form>
@@ -61,7 +62,7 @@ const TodoApp = ({ session }: { session: Session }) => {
           {todos.map((todo: any) => (
             <div
               key={todo.todo_id}
-              className="flex bg-orange-200 rounded-md mt-2 mb-2 p-2 justify-between"
+              className="flex bg-orange-300 rounded-md mt-2 mb-2 p-2 justify-between"
             >
               <li className="font-medium">✅ {todo.title}</li>
               <span
