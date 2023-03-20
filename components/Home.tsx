@@ -1,62 +1,43 @@
-import React, { useEffect, useState } from "react";
-import { supabase } from "~/utils/supabase";
-import { addTodo, getAllTodos } from "~/utils/supabaseFunction";
-import TodoList from "./TodoList";
+import { useSession, useSupabaseClient } from "@supabase/auth-helpers-react";
+import { Auth } from "@supabase/auth-ui-react";
+import { ThemeSupa } from "@supabase/auth-ui-shared";
+import { NextPage } from "next";
+import TodoApp from "./TodoApp";
 
-const Home = () => {
-  const [todos, setTodos] = useState<any>([]);
-  const [title, setTitle] = useState<string>("");
-
-  useEffect(() => {
-    const getTodos = async () => {
-      const todos = await getAllTodos();
-      setTodos(todos);
-      console.log(todos);
-    };
-    getTodos();
-  }, []);
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    if (title === "") return;
-
-    // Todoの追加
-    await addTodo(title);
-    // Todoリスト更新
-    let todos = await getAllTodos();
-    setTodos(todos);
-    // 入力域を空にする
-    setTitle("");
-  };
+const Home: NextPage = () => {
+  const session = useSession();
+  const supabaseClient = useSupabaseClient();
 
   // ログアウトする
-  const signOut = () => {
-    supabase.auth.signOut();
+  const signOut = async () => {
+    const { error } = await supabaseClient.auth.signOut();
+    if (error) console.log("Error logging out!", error.message);
   };
 
   return (
-    <section className="text-center mb-2 text-2xl font-medium">
-      <h3>Supabase Todo App</h3>
-      <form onSubmit={(e) => handleSubmit(e)}>
-        <input
-          type="text"
-          className="mr-2 shadow-lg p-1 outline-none"
-          onChange={(e) => setTitle(e.target.value)}
-          value={title}
-        />
-        <button className="shadow-md border-2 px-1 py-1 rounded-lg bg-green-200">
-          Add
-        </button>
-      </form>
-      <TodoList todos={todos} setTodos={setTodos} />
-      <button
-        className="my-4 border-2 border-black rounded-md px-2 bg-gray-200"
-        onClick={signOut}
-      >
-        ログアウト
-      </button>
-    </section>
+    <>
+      <section className="flex justify-center items-center h-screen">
+        <div className="flex flex-col justify-center items-center">
+          {session ? null : <h1>Supabase Todo App ログイン</h1>}
+          {session ? (
+            <>
+              <TodoApp session={session} />
+              <button
+                className="my-4 border-2 border-black rounded-md px-2 bg-gray-200"
+                onClick={signOut}
+              >
+                ログアウト
+              </button>
+            </>
+          ) : (
+            <Auth
+              supabaseClient={supabaseClient}
+              appearance={{ theme: ThemeSupa }}
+            />
+          )}
+        </div>
+      </section>
+    </>
   );
 };
 
