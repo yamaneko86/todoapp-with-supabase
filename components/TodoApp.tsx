@@ -1,6 +1,7 @@
 import { useSupabaseClient } from "@supabase/auth-helpers-react";
 import { Session } from "@supabase/supabase-js";
 import React, { useEffect, useState } from "react";
+import { Todo } from "~/utils/interface";
 import { addTodo, deleteTodo, getAllTodos } from "~/utils/supabaseFunction";
 
 const TodoApp = ({ session }: { session: Session }) => {
@@ -59,7 +60,7 @@ const TodoApp = ({ session }: { session: Session }) => {
       </form>
       <div>
         <ul className="mx-auto">
-          {todos.map((todo: any) => (
+          {todos.map((todo: Todo) => (
             <div
               key={todo.todo_id}
               className="flex bg-orange-300 rounded-md mt-2 mb-2 p-2 justify-between"
