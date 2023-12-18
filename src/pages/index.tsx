@@ -5,7 +5,7 @@ export default function Index() {
   return (
     <>
       <Head>
-        <title>TodoApp</title>
+        <title>Todo App</title>
         <meta
           name="description"
           content="TodoApp created by Next.js, TypeScript and Supabase."
